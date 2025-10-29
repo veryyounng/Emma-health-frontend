@@ -1,0 +1,82 @@
+# ────────────── 기본 로그 및 빌드 ──────────────
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ────────────── 환경 변수 / 설정 ──────────────
+.env
+.env.*.local
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# ────────────── 편집기 / IDE ──────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ────────────── OS / 캐시 / 임시 ──────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.tmp
+.cache/
+.temp/
+tmp/
+__pycache__/
+*.pid
+*.seed
+*.pid.lock
+
+# ────────────── 테스트 및 커버리지 ──────────────
+coverage/
+*.lcov
+jest-html-reporters-*
+.vitest/
+.vscode-test/
+
+# ────────────── 빌드 도구 및 린트 캐시 ──────────────
+.eslintcache
+.stylelintcache
+.turbo/
+parcel-cache/
+vite-cache/
+tsbuildinfo.json
+tsconfig.tsbuildinfo
+
+# ────────────── 배포 / CI ──────────────
+.vercel/
+.netlify/
+out/
+serverless/
+functions/
+build/
+Dockerfile
+docker-compose.yml
+*.iml
+
+# ────────────── 기타 (선택적으로 무시) ──────────────
+*.zip
+*.tar
+*.gz
+*.tgz
+*.bak
+*.orig
+*.rej
+*.log.*
