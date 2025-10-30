@@ -1,8 +1,8 @@
 // import { useEffect, useState } from "react";
-import axios from "axios";
-import RPPGChart from "./components/RPPGChart";
-import "./App.css";
-import { useQuery } from "@tanstack/react-query";
+import axios from 'axios';
+import RPPGChart from './components/RPPGChart';
+import './App.css';
+import { useQuery } from '@tanstack/react-query';
 
 /** 응답 타입(필요한 부분만 최소 정의) */
 type RppgBlock = {
@@ -29,10 +29,10 @@ export default function App() {
     refetch,
     failureCount, // 재시도 진행 상황
   } = useQuery({
-    queryKey: ["report"],
+    queryKey: ['report'],
     queryFn: async () => {
       const res = await axios.get<Report>(
-        "/api/pre-assignment/session-result-report",
+        '/api/pre-assignment/session-result-report',
         { timeout: 8000 }
       );
       return res.data;
@@ -45,14 +45,14 @@ export default function App() {
       <div className="page">
         {failureCount > 0
           ? `재시도 중 (${Math.min(failureCount, 3)}/3)… 잠시만요`
-          : "로딩중…"}
+          : '로딩중…'}
       </div>
     );
   }
 
   // 최종 실패 시 (4xx 등) — Boundary가 처리하지 않은 에러 + 데이터 없음
   if (isError || !data) {
-    const msg = (error as any)?.message ?? "불러오기 실패";
+    const msg = (error as any)?.message ?? '불러오기 실패';
     return (
       <div className="page">
         <div>불러오기 실패: {msg}</div>
@@ -102,9 +102,9 @@ function Card({
   prev: string;
   unit: string;
 }) {
-  const toNum = (s: string) => Number(String(s).replace(/[^0-9.-]/g, ""));
+  const toNum = (s: string) => Number(String(s).replace(/[^0-9.-]/g, ''));
   const delta = toNum(now) - toNum(prev);
-  const sign = delta > 0 ? "+" : "";
+  const sign = delta > 0 ? '+' : '';
   return (
     <div className="card">
       <div className="card-label">{label}</div>
