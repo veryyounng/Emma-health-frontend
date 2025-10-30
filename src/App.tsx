@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import RPPGChart from './components/RPPGChart';
-import './App.css';
+// import { useEffect, useState } from "react";
+import axios from "axios";
+import RPPGChart from "./components/RPPGChart";
+import "./App.css";
+import { useQuery } from "@tanstack/react-query";
 
 /** 응답 타입(필요한 부분만 최소 정의) */
 type RppgBlock = {
@@ -19,41 +20,58 @@ type Report = {
 };
 
 export default function App() {
-  const [data, setData] = useState<Report | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+    failureCount, // 재시도 진행 상황
+  } = useQuery({
+    queryKey: ["report"],
+    queryFn: async () => {
+      const res = await axios.get<Report>(
+        "/api/pre-assignment/session-result-report",
+        { timeout: 8000 }
+      );
+      return res.data;
+    },
+  });
 
-  useEffect(() => {
-    (async () => {
-      try {
-        // 프록시를 쓰면 '/api/...' 로 호출 (아래 4) 참고)
-        const res = await axios.get(
-          '/api/pre-assignment/session-result-report'
-        );
+  // 로딩 & 자동 재시도 중 메시지
+  if (isLoading || isFetching) {
+    return (
+      <div className="page">
+        {failureCount > 0
+          ? `재시도 중 (${Math.min(failureCount, 3)}/3)… 잠시만요`
+          : "로딩중…"}
+      </div>
+    );
+  }
 
-        setData(res.data);
-      } catch (e: any) {
-        setError(e?.message ?? 'failed to fetch');
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  if (loading) return <div className="page">로딩중…</div>;
-  if (error || !data) return <div className="page">불러오기 실패: {error}</div>;
+  // 최종 실패 시 (4xx 등) — Boundary가 처리하지 않은 에러 + 데이터 없음
+  if (isError || !data) {
+    const msg = (error as any)?.message ?? "불러오기 실패";
+    return (
+      <div className="page">
+        <div>불러오기 실패: {msg}</div>
+        <button className="btn" onClick={() => refetch()}>
+          다시 시도
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="page">
       <h1 className="title">심박수</h1>
 
-      {/* 1) 심박수 그래프 (이전 vs 현재) */}
       <RPPGChart
         previous={data.previousRPPG.hrValues}
         current={data.currentRPPG.hrValues}
       />
 
-      {/* 2) 간단 비교 카드 예시 (원하면 이후 상세 카드 추가) */}
       <div className="cards">
         <Card
           label="심박수(HR)"
@@ -84,9 +102,9 @@ function Card({
   prev: string;
   unit: string;
 }) {
-  const toNum = (s: string) => Number(String(s).replace(/[^0-9.\-]/g, ''));
+  const toNum = (s: string) => Number(String(s).replace(/[^0-9.-]/g, ""));
   const delta = toNum(now) - toNum(prev);
-  const sign = delta > 0 ? '+' : '';
+  const sign = delta > 0 ? "+" : "";
   return (
     <div className="card">
       <div className="card-label">{label}</div>
