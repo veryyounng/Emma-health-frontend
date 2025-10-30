@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>기본 결과</title>
+    <link rel="stylesheet" href="./tmpStyle.css" />
+  </head>
+  <body>
+    <!-- 회색 배경 위, 가운데 1컬럼 레이아웃 -->
+    <div class="wrap">
+      <div class="container">
+        <!-- 상단 탭 -->
+        <nav class="tabs">
+          <button class="tab is-active">기본 결과</button>
+          <button class="tab">세부 결과</button>
+        </nav>
+
+        <!-- 본문: 끊김 없이 쭉 이어지는 영역 -->
+        <main class="page">
+          <!-- 섹션: 심박수 (차트) -->
+          <section class="panel">
+            <h2 class="panel-title">심박수</h2>
+            <div class="panel-body">
+              <div class="chart placeholder">차트 영역</div>
+              <p class="caption">
+                심박수는 분당 심장 박동의 수치를 의미해요. 일반적으로 성인은
+                60–100 BPM이 정상 범위로, 평균 64 bpm으로 측정되었어요. 관련
+                설명은 실제 데이터 연동 후 더 구체화할게요.
+              </p>
+            </div>
+          </section>
+
+          <!-- 섹션: 심박수 변화 (미니차트 3분할 예시) -->
+          <section class="panel">
+            <h3 class="sub-title">심박수 변화</h3>
+            <div class="mini-grid">
+              <div class="mini panel-lite">
+                <div class="mini-title">최저값</div>
+                <div class="mini-graph placeholder">막대</div>
+              </div>
+              <div class="mini panel-lite">
+                <div class="mini-title">직전</div>
+                <div class="mini-graph placeholder">막대</div>
+              </div>
+              <div class="mini panel-lite">
+                <div class="mini-title">현재</div>
+                <div class="mini-graph placeholder">막대</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 섹션: 심박 변이도 (가운데 수치, 좌우 도넛 자리) -->
+          <section class="panel">
+            <h3 class="sub-title">심박 변이도</h3>
+            <div class="hrv">
+              <div class="gauge placeholder">도넛(전)</div>
+              <div class="hrv-center">
+                <div class="big-kv">
+                  <span class="heart"
+                    ><img src="./src/img/hrv 2.png" alt=""
+                  /></span>
+                  74 <small>ms</small>
+                </div>
+                <p class="hrv-desc">
+                  심박 변이도는 심장 박동 사이의 유연함을 의미해요. 값이
+                  높을수록 스트레스 저항이 높을 가능성이 있어요.
+                </p>
+              </div>
+              <div class="gauge placeholder">도넛(후)</div>
+            </div>
+          </section>
+
+          <!-- 섹션: 스트레스 & 감정 (2분할) -->
+          <section class="grid-2">
+            <div class="panel">
+              <h3 class="sub-title">스트레스</h3>
+              <div class="stressbar">
+                <div class="bar">
+                  <span class="bar-fill" style="width: 72%"></span>
+                </div>
+                <p class="caption">
+                  스트레스 수치가 높아요. 충분히 휴식을 취하세요.
+                </p>
+              </div>
+            </div>
+            <div class="panel">
+              <h3 class="sub-title">감정</h3>
+              <div class="emotion">
+                <div class="gauge placeholder">도넛</div>
+                <ul class="legend">
+                  <li>우울 9%</li>
+                  <li>행복 45%</li>
+                  <li>중립 31%</li>
+                  <li>분노 15%</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- 섹션: 우울증 선별 결과 -->
+          <section class="panel">
+            <h3 class="sub-title">우울증 선별 결과</h3>
+            <div class="grid-2">
+              <div class="gauge placeholder">도넛(16/27)</div>
+              <div class="panel-body">
+                <div class="badge">경고</div>
+                <p class="caption">
+                  문항 기준으로 주의가 필요합니다. 이 설명은 더미 텍스트이며
+                  실제 결과 로직에 맞춰 교체됩니다.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 종료 버튼 -->
+          <button class="primary block">종료</button>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

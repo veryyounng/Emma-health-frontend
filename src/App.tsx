@@ -41,8 +41,8 @@ export default function App() {
   // 로딩 & 자동 재시도 중
   if (isLoading || isFetching) {
     return (
-      <div className="viewport">
-        <div className="phone">
+      <div className="wrap">
+        <div className="container">
           <div className="page">
             {failureCount > 0
               ? `재시도 중 (${Math.min(failureCount, 3)}/3)… 로 딩 중..🫧`
@@ -57,8 +57,8 @@ export default function App() {
   if (isError || !data) {
     const msg = (error as any)?.message ?? '불러오기 실패';
     return (
-      <div className="viewport">
-        <div className="phone">
+      <div className="wrap">
+        <div className="container">
           <div className="page">
             <div>불러오기 실패: {msg}</div>
             <button className="btn" onClick={() => refetch()}>
@@ -70,10 +70,10 @@ export default function App() {
     );
   }
 
-  // 정상 렌더링
+  // 정상 렌더링 (세로로 쭉 이어짐)
   return (
-    <div className="viewport">
-      <div className="phone">
+    <div className="wrap">
+      <div className="container">
         {/* 상단 탭(디자인만) */}
         <div className="tabs">
           <button className="tab tab-active">기본 결과</button>
@@ -83,14 +83,14 @@ export default function App() {
         <div className="page">
           <h1 className="title">심박수</h1>
 
-          <div className="panel">
+          <section className="panel">
             <RPPGChart
               previous={data.previousRPPG.hrValues}
               current={data.currentRPPG.hrValues}
             />
-          </div>
+          </section>
 
-          <div className="cards">
+          <section className="cards">
             <Card
               label="심박수(HR)"
               now={data.currentRPPG.hr}
@@ -103,12 +103,11 @@ export default function App() {
               prev={data.previousRPPG.hrv}
               unit="ms"
             />
-          </div>
-        </div>
+          </section>
 
-        {/* 하단 고정 버튼 */}
-        <div className="footer">
-          <button className="primary">종료</button>
+          {/* 이후 섹션들(게이지/설명/도넛) 여기에 계속 추가) */}
+
+          <button className="primary block">종료</button>
         </div>
       </div>
     </div>

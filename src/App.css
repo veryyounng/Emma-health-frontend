@@ -1,62 +1,146 @@
-/* App.css */
+:root {
+  --bg: #f3f4f6;
+  --panel: #fff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --ring: #e5e7eb;
+  --brand: #3b82f6;
+  --shadow-1: 0 6px 20px rgba(15, 23, 42, 0.06);
+  --radius-md: 14px;
+}
 
-.page {
-  max-width: 1200px; /* 페이지 전체 폭 (원하면 1400~1600까지) */
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  min-height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    'Noto Sans KR', sans-serif;
+  color: var(--text);
+}
+
+/* 화면 전체 여백만 주고, 가운데 1컬럼 컨테이너 */
+.wrap {
+  padding: 24px 0;
+}
+.container {
+  width: min(420px, 100% - 32px); /* 모바일 기준 폭 */
   margin: 0 auto;
-  padding: 24px;
+}
+
+/* 상단 탭 */
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--ring);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  background: #fff;
+  overflow: hidden;
+}
+.tab {
+  padding: 12px 0;
+  font-weight: 700;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+}
+.tab-active {
+  color: var(--text);
+  border-bottom-color: var(--brand);
+}
+
+/* 본문은 자연스럽게 세로로 흘러감 */
+.page {
+  background: #fff;
+  border: 1px solid var(--ring);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .title {
-  font-size: 28px;
+  margin: 4px 0 2px;
+  font-size: 18px;
   font-weight: 800;
-  margin: 12px 0 16px;
-  color: #111827;
 }
 
-.section-card {
+/* 섹션 박스 */
+.panel {
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--ring);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  padding: 12px;
 }
 
-/* 차트는 부모 폭 100%로 늘릴 수 있게 래퍼만 제공 */
-.chart-wrap {
-  width: 100%;
-}
-
-/* 고정 높이: ResponsiveContainer height에 맞춰 보기 좋게 */
-.chart-inner {
-  height: 360px; /* 필요 시 380~420 조절 */
-}
-
-/* 카드 그리드 예시 */
+/* 카드 그리드 */
 .cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+  gap: 12px;
+}
+@media (max-width: 360px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card {
   background: #fff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--ring);
   border-radius: 12px;
-  padding: 16px;
-  text-align: left;
+  padding: 12px;
+  box-shadow: var(--shadow-1);
 }
-
 .card-label {
-  font-size: 14px;
-  color: #6b7280;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
 }
 .card-now {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 .card-sub {
-  font-size: 13px;
-  color: #6b7280;
   margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* 버튼 */
+.btn,
+.primary {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn {
+  background: #fff;
+  border: 1px solid var(--ring);
+}
+.primary {
+  background: var(--brand);
+  color: #fff;
+  border: none;
+}
+.block {
+  margin-top: 10px;
+}
+
+/* 차트 높이 */
+.panel .recharts-responsive-container {
+  width: 100% !important;
+  height: 180px !important;
 }
