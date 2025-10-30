@@ -55,7 +55,7 @@ export default function RPPGChart({ previous, current }: Props) {
     <div
       style={{
         width: '100%',
-        maxWidth: 600, // ✅ 숫자(px) 또는 '1200px'
+        maxWidth: 600,
         margin: '0 auto',
       }}
     >
@@ -69,7 +69,7 @@ export default function RPPGChart({ previous, current }: Props) {
             type="number"
             domain={[0, len]}
             ticks={xTicks}
-            tick={{ fontSize: 12, fill: '#555' }}
+            tick={{ fontSize: 12, fill: '#252323ff' }}
             tickMargin={12}
             allowDecimals={false}
           />
@@ -77,9 +77,9 @@ export default function RPPGChart({ previous, current }: Props) {
             domain={[0, 160]}
             ticks={[0, 40, 80, 120, 160]}
             allowDecimals={false}
-            tick={{ fontSize: 12, fill: '#555' }}
-            axisLine={{ stroke: '#999' }}
-            tickLine={{ stroke: '#999' }}
+            tick={{ fontSize: 12, fill: '#252323ff' }}
+            axisLine={{ stroke: '#252323ff' }}
+            tickLine={{ stroke: '#252323ff' }}
           />
           <Tooltip />
           <Legend verticalAlign="top" align="center" content={<LegendTop />} />
