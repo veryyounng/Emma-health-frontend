@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import RPPGChart from './components/RPPGChart';
-import './App.css';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
+import RPPGChart from './components/RPPGChart';
+import './App.css';
 
 /** 응답 타입 */
 type RppgBlock = {
@@ -11,8 +11,8 @@ type RppgBlock = {
   hrValues: number[];
   hrv: string;
   emotion: string;
-  stress: string;
-  emotionResult: Record<string, number>;
+  stress: string; // "21" 같은 문자열일 수 있음
+  emotionResult: Record<string, number>; // {우울:9, 행복:45, ...}
 };
 type Report = {
   previousRPPG: RppgBlock;
@@ -21,6 +21,8 @@ type Report = {
 };
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState<'basic' | 'detail'>('basic');
+
   const { data, isLoading, isFetching, isError, error, refetch, failureCount } =
     useQuery<Report, Error>({
       queryKey: ['report'],
@@ -38,7 +40,21 @@ export default function App() {
     if (isError) toast.error('데이터를 불러오지 못했습니다.');
   }, [isError]);
 
-  // 로딩 & 자동 재시도 중
+  const toNum = (s: string | number) =>
+    Number(String(s).replace(/[^0-9.-]/g, '') || 0);
+  const stressScore = useMemo(
+    () => (data ? toNum(data.currentRPPG.stress) : 0),
+    [data]
+  );
+  const hrvNow = useMemo(
+    () => (data ? toNum(data.currentRPPG.hrv) : 0),
+    [data]
+  );
+  // const hrvPrev = useMemo(
+  //   () => (data ? toNum(data.previousRPPG.hrv) : 0),
+  //   [data]
+  // );
+
   if (isLoading || isFetching) {
     return (
       <div className="wrap">
@@ -53,7 +69,6 @@ export default function App() {
     );
   }
 
-  // 에러 or 데이터 없음
   if (isError || !data) {
     const msg = (error as any)?.message ?? '불러오기 실패';
     return (
@@ -61,7 +76,7 @@ export default function App() {
         <div className="container">
           <div className="page">
             <div>불러오기 실패: {msg}</div>
-            <button className="btn" onClick={() => refetch()}>
+            <button className="primary block" onClick={() => refetch()}>
               다시 시도
             </button>
           </div>
@@ -70,72 +85,190 @@ export default function App() {
     );
   }
 
-  // 정상 렌더링 (세로로 쭉 이어짐)
   return (
     <div className="wrap">
       <div className="container">
-        {/* 상단 탭(디자인만) */}
-        <div className="tabs">
-          <button className="tab tab-active">기본 결과</button>
-          <button className="tab">세부 결과</button>
-        </div>
+        {/* 상단 탭 */}
+        <nav className="tabs">
+          <button
+            className={`tab ${activeTab === 'basic' ? 'is-active' : ''}`}
+            onClick={() => setActiveTab('basic')}
+          >
+            기본 결과
+          </button>
+          <button
+            className={`tab ${activeTab === 'detail' ? 'is-active' : ''}`}
+            onClick={() => setActiveTab('detail')}
+          >
+            세부 결과
+          </button>
+        </nav>
 
-        <div className="page">
-          <h1 className="title">심박수</h1>
-
+        <main className="page">
+          {/* 섹션: 심박수(차트 + 캡션) */}
           <section className="panel">
-            <RPPGChart
-              previous={data.previousRPPG.hrValues}
-              current={data.currentRPPG.hrValues}
-            />
+            <h2 className="sub-title">심박수</h2>
+            <div className="panel-body">
+              {/* 👉 HTML의 .chart.placeholder 자리에 RPPGChart 삽입 */}
+              <div className="chart">
+                <RPPGChart
+                  previous={data.previousRPPG.hrValues}
+                  current={data.currentRPPG.hrValues}
+                />
+              </div>
+
+              <p className="caption">
+                심박수는 1분 동안 심장이 뛰는 횟수를 의미해요. <br />
+                일반적으로 성인은 60-100 BPM이 정상 범위에요. <br />
+                심박수가 너무 높거나 낮으면 <br />
+                건강 문제의 신호일 수 있어 주의가 필요해요.
+              </p>
+            </div>
+
+            <div className="panel-inset">
+              <h3 className="sub-title">심박수 변화</h3>
+              <div className="mini-grid">
+                <div className="mini panel-lite">
+                  <div className="mini-title"></div>
+                </div>
+                <div className="mini panel-lite">
+                  <div className="mini-title">직전</div>
+                </div>
+                <div className="mini panel-lite">
+                  <div className="mini-title">현재</div>
+                </div>
+              </div>
+            </div>
           </section>
 
-          <section className="cards">
-            <Card
-              label="심박수(HR)"
-              now={data.currentRPPG.hr}
-              prev={data.previousRPPG.hr}
-              unit="bpm"
-            />
-            <Card
-              label="심박 변이도(HRV)"
-              now={data.currentRPPG.hrv}
-              prev={data.previousRPPG.hrv}
-              unit="ms"
-            />
+          {/* 섹션: 심박 변이도 */}
+          <section className="panel">
+            <h3 className="sub-title">심박 변이도</h3>
+            <div className="hrv">
+              <div className="gauge placeholder">도넛(전)</div>
+
+              <div className="hrv-center">
+                <div className="big-kv">
+                  <span className="heart">
+                    <img src="./src/img/hrv 2.png" alt="" />
+                  </span>
+                  {hrvNow} <small>ms</small>
+                </div>
+
+                <p className="hrv-desc">
+                  심박 변이도는 심장이 얼마나 유연하게 <br />
+                  조절되는 지를 알려주는 지표에요. <br />
+                  해당 값이 높을수록 건강한 상태를 의미해요.
+                </p>
+                <p className="hrv-desc2">
+                  제공된 HRV 위험도는 참고용으로서, 정확한 진단은 반드시
+                  의료기관에서 받으시기 바랍니다.
+                </p>
+              </div>
+
+              <div className="gauge placeholder">도넛(후)</div>
+            </div>
           </section>
 
-          {/* 이후 섹션들(게이지/설명/도넛) 여기에 계속 추가) */}
+          {/* 섹션: 스트레스 & 감정 */}
+          <section className="grid-2">
+            {/* 스트레스 */}
+            <div className="panel">
+              <h3 className="sub-title">스트레스</h3>
+              <StressGauge
+                score={stressScore}
+                min={0}
+                max={100}
+                pointerSrc="./src/img/Polygon 5.png"
+              />
+            </div>
+
+            {/* 감정 */}
+            <div className="panel">
+              <h3 className="sub-title">감정</h3>
+              <div className="emotion">
+                <div className="gauge placeholder">도넛</div>
+                <ul className="legend">
+                  {Object.entries(data.currentRPPG.emotionResult).map(
+                    ([k, v]) => (
+                      <li key={k}>
+                        {k} {v}%
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* 섹션: 우울증 설문 결과 */}
+          <section className="panel">
+            <h3 className="sub-title">우울증 설문 결과</h3>
+            <div className="grid-2">
+              <div className="gauge placeholder">
+                도넛({data.depressionScore.current}/27)
+              </div>
+              <div className="panel-body">
+                <div className="result-row">
+                  <span className="result-label">결과</span>
+                  <span className="badge">주의</span>
+                </div>
+                <p className="caption2">
+                  가벼운 수준의 우울감이 나타나고 있습니다. <br />
+                  일시적인 감정 기복일 수 있으나, 증상이 악화되지 않도록
+                  적극적인 관심과 관리가 필요합니다.
+                  <br />
+                  <br />
+                  가족, 친구, 이웃 등 주변 사람과의 교류를 늘리고, 필요하다면
+                  지역사회 상담기관이나 심리상담센터 등 전문 자원을 활용해
+                  보세요.
+                </p>
+              </div>
+            </div>
+          </section>
 
           <button className="primary block">종료</button>
-        </div>
+        </main>
       </div>
     </div>
   );
 }
 
-function Card({
-  label,
-  now,
-  prev,
-  unit,
+/* ========================= */
+/* 재사용: 스트레스 게이지   */
+/* ========================= */
+function StressGauge({
+  score,
+  min = 0,
+  max = 100,
+  pointerSrc,
 }: {
-  label: string;
-  now: string;
-  prev: string;
-  unit: string;
+  score: number;
+  min?: number;
+  max?: number;
+  pointerSrc: string;
 }) {
-  const toNum = (s: string) => Number(String(s).replace(/[^0-9.-]/g, ''));
-  const delta = toNum(now) - toNum(prev);
-  const sign = delta > 0 ? '+' : '';
+  const clamped = Math.max(min, Math.min(score, max));
+  const pct = ((clamped - min) / (max - min)) * 100;
+  const SAFE = 2; // 둥근 끝 잘림 방지
+  const left = Math.max(SAFE, Math.min(pct, 100 - SAFE));
+
   return (
-    <div className="card">
-      <div className="card-label">{label}</div>
-      <div className="card-now">{now}</div>
-      <div className="card-sub">
-        직전 {prev} / Δ {sign}
-        {Math.round(delta)} {unit}
+    <div className="stressbar">
+      <div className="bar" data-min={min} data-max={max}>
+        <img
+          className="pointer-img"
+          src={pointerSrc}
+          alt="pointer"
+          style={{ left: `${left}%` }}
+          draggable={false}
+        />
       </div>
+      <p className="caption">
+        스트레스 수치가 낮아요. <br />
+        가끔 스트레스를 경험하긴 하지만 <br />
+        충분히 관리할 수 있는 상태에요!
+      </p>
     </div>
   );
 }

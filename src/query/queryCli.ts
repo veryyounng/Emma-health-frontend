@@ -1,5 +1,5 @@
 // src/query/queryClient.ts
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,8 +18,8 @@ export const queryClient = new QueryClient({
       },
       staleTime: 10_000,
       gcTime: 5 * 60_000,
-      // 5xx/네트워크 계열은 Boundary로 올려서 흰화면 방지 + Fallback UI
-      useErrorBoundary: (err: any) => {
+      // v5: useErrorBoundary -> throwOnError 로 변경
+      throwOnError: (err: any) => {
         const s = err?.response?.status ?? err?.status;
         return s >= 500 || s === undefined;
       },
