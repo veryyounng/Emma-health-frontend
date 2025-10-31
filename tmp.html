@@ -76,15 +76,19 @@
             <div class="panel">
               <h3 class="sub-title">스트레스</h3>
               <div class="stressbar">
-                <div class="bar">
-                  <span class="bar-fill" style="width: 72%"></span>
+                <div class="bar" data-min="0" data-max="100">
+                  <!-- 네가 쓰는 포인터 이미지 그대로 -->
+                  <img id="stressPointer" class="pointer-img" src="./src/img/Polygon 5.png" alt="pointer" />
                 </div>
+              
                 <p class="caption">
-                  스트레스 수치가 낮아요. <br>
-가끔 스트레스를 경험하긴 하지만 <br>
-충분히 관리할 수 있는 상태에요!
+                  스트레스 수치가 낮아요. <br />
+                  가끔 스트레스를 경험하긴 하지만 <br />
+                  충분히 관리할 수 있는 상태에요!
                 </p>
               </div>
+              
+              
             </div>
             <div class="panel">
               <h3 class="sub-title">감정</h3>

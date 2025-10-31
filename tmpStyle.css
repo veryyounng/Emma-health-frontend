@@ -259,21 +259,26 @@ body {
 
 /* 스트레스 바 */
 .stressbar .bar {
-  margin-top: 40px;
   position: relative;
   height: 30px;
   border-radius: 999px;
   background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
-  overflow: hidden;
   border: 1px solid var(--ring);
+  /* 포인터가 위로 튀어나오므로 가리면 안 됨 */
+  overflow: visible; /* ← 중요!  이전의 overflow:hidden 제거 */
 }
-.stressbar .bar-fill {
-  margin-top: 5px;
+
+/* 포인터 이미지 (위에서 아래로 가리키는 삼각형 PNG) */
+.stressbar .pointer-img {
   position: absolute;
-  inset: 0;
-  right: auto;
-  background: rgba(255, 255, 255, 0.15);
-  border-right: 2px solid #111827;
+  top: -14px;
+  left: 30%;
+  height: 25px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+  transition: left 300ms ease;
 }
 
 /* 감정 */
