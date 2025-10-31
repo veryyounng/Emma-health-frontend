@@ -26,56 +26,53 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    "Noto Sans KR", sans-serif;
+    'Noto Sans KR', sans-serif;
 }
 
-/* 바깥 여백과 가운데 1컬럼(피그마 16px 패딩 기준) */
 .wrap {
   padding: 16px 0;
 }
 .container {
-  width: min(400px, 100% - 32px);
+  width: min(650px, 100% - 32px);
   margin: 0 auto;
 }
 
-/* 기존 .tabs 수정 */
 .tabs {
   display: flex;
   gap: 0;
   background: transparent;
-  border: 0; /* 탭 바 자체 테두리/라운드 제거 */
-  padding: 0; /* ⬅⬅⬅ 여기! 아래 패딩 때문에 틈이 생겼었음 */
-  margin: 0 0 -1px; /* 페이지 테두리 위로 1px 끌어올림(겹치기) */
+  border: 0;
+  padding: 0;
+  margin: 0 0 -1px;
 }
 
-/* 탭 버튼 */
 .tab {
   appearance: none;
   background: transparent;
   border: 1px solid transparent;
-  border-bottom: none; /* 아래쪽은 비워두고 */
+  border-bottom: none;
   color: #6b7280;
-  font-weight: 900;
+  font-weight: 600;
+  font-size: large;
   padding: 14px 16px;
-  border-radius: 10px 10px 0 0; /* 상단만 둥글게 */
+  border-radius: 10px 10px 0 0;
   cursor: pointer;
+  font-family: 'Inter', sans-serif;
 }
 
-/* 활성 탭만 흰색 카드처럼 보이게 + 페이지와 연결 */
 .tab.is-active {
   background: #fff;
   color: #111827;
   border-color: var(--ring);
-  border-bottom-color: #fff; /* 아래 경계는 흰색으로(사실상 끊김 없이) */
+  border-bottom-color: #fff;
   position: relative;
   z-index: 2;
 }
 
-/* 페이지 카드: 위쪽 경계는 탭이 덮으므로 없앰 */
 .page {
   background: #fff;
   border: 1px solid var(--ring);
-  border-top: none; /* 탭 아래쪽과 맞물리게 */
+  border-top: none;
   border-radius: 0 10px 10px 10px;
   padding: 16px;
   display: flex;
@@ -83,33 +80,51 @@ body {
   gap: var(--gap);
 }
 
-/* ====== 제목들: 진한 검정, 음영 제거 ====== */
 .panel-title {
   margin: 0 0 12px;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 900;
-  color: #111827; /* 검정 */
+  color: #111827;
   text-shadow: none;
 }
 .sub-title {
   margin: 0 0 10px;
   font-size: 16px;
-  font-weight: 900;
-  color: #111827; /* 검정 */
+  font-weight: 700;
+  font-style: bold;
+  color: #111827;
   text-shadow: none;
+  font-family: Inter;
 }
 
-/* ====== 패널: 그림자 제거(명암 X) ====== */
 .panel {
   background: #fff;
   border: 1px solid var(--ring);
   border-radius: var(--radius-md);
-  /* box-shadow: var(--shadow-1);  제거 */
   box-shadow: none;
   padding: 16px;
 }
 
-/* 심박수 안쪽 작은 카드도 동일하게 flat */
+/* 우울증 결과 - 상단 긴 결과 행 */
+.result-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--ring);
+  border-radius: 10px;
+  background: #fff;
+  margin: 8px 0 14px;
+}
+.result-row .result-label {
+  font-size: 13px;
+  color: var(--text);
+  font-family: Inter;
+  font-weight: 700;
+}
+
 .panel-lite {
   background: #fff;
   border: 1px solid var(--ring);
@@ -125,7 +140,7 @@ body {
   border: 1px solid var(--ring);
   border-radius: 12px;
   background: #fff;
-  box-shadow: none; /* inset/음영 제거 */
+  box-shadow: none;
 }
 
 /* 차트 높이(옵션) */
@@ -133,9 +148,13 @@ body {
   height: 220px;
 }
 
-/* 캡션 색은 살짝 흐리게 유지 */
 .caption {
-  color: var(--muted);
+  color: var(--text);
+  font-family: Pretendard;
+  font-size: 13px;
+  font-weight: 700;
+  font-style: semibold;
+  text-align: center;
 }
 
 /* placeholder 영역(추후 그래프/도넛 교체) */
@@ -170,29 +189,63 @@ body {
   height: 80px;
 }
 
-/* HRV 중앙 수치 + 좌우 도넛 */
+/* ===== 심박 변이도 전체 컨테이너 ===== */
 .hrv {
-  display: grid;
-  grid-template-columns: 90px 1fr 90px;
-  gap: 10px;
+  display: flex;
   align-items: center;
-}
-.big-kv {
-  font-size: 36px;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.5px;
-}
-.big-kv small {
-  font-size: 14px;
-  font-weight: 800;
-  margin-left: 4px;
-}
-.heart {
-  margin-right: 6px;
+  justify-content: space-between;
+  background: #fff;
+  gap: 30px;
 }
 
-/* 2분할 그리드 */
+/* ===== 중앙 big-kv (하트 + 수치 + ms) ===== */
+.hrv-center {
+  text-align: center;
+  flex: 1;
+}
+
+.big-kv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 1;
+  color: #0f172a;
+}
+
+.big-kv small {
+  margin-top: 25px;
+  font-size: 25px;
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+.heart img {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.hrv-desc {
+  margin-top: 18px;
+  font-weight: 600;
+  font-size: 14px;
+  color: --text;
+  text-align: center;
+}
+
+.hrv-desc2 {
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 10px;
+  color: rgba(107, 107, 107, 1);
+  text-align: center;
+}
+
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -206,14 +259,16 @@ body {
 
 /* 스트레스 바 */
 .stressbar .bar {
+  margin-top: 40px;
   position: relative;
-  height: 16px;
+  height: 30px;
   border-radius: 999px;
   background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
   overflow: hidden;
   border: 1px solid var(--ring);
 }
 .stressbar .bar-fill {
+  margin-top: 5px;
   position: absolute;
   inset: 0;
   right: auto;
@@ -238,16 +293,20 @@ body {
   margin: 4px 0;
 }
 
+.caption2 {
+  color: var(--text);
+  font-family: Pretendard;
+  font-size: 13px;
+  font-weight: 700;
+  font-style: semibold;
+}
+
 /* 뱃지 */
 .badge {
   display: inline-block;
-  padding: 4px 8px;
   font-size: 12px;
   font-weight: 800;
-  border-radius: 999px;
-  background: #fff7ed;
-  color: #c2410c;
-  border: 1px solid #fed7aa;
+  color: rgba(255, 204, 0, 1);
 }
 
 /* 버튼 */
