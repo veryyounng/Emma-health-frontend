@@ -16,7 +16,6 @@
           <button class="tab">세부 결과</button>
         </nav>
 
-        <!-- 본문: 끊김 없이 쭉 이어지는 영역 -->
         <main class="page">
           <!-- 섹션: 심박수 (차트) -->
           <section class="panel">
@@ -29,6 +28,22 @@
                 설명은 실제 데이터 연동 후 더 구체화할게요.
               </p>
             </div>
+            <div class="panel-inset">
+    <h3 class="sub-title">심박수 변화</h3>
+    <div class="mini-grid">
+      <div class="mini panel-lite">
+        <div class="mini-title"></div>
+        
+      </div>
+      <div class="mini panel-lite">
+        <div class="mini-title">직전</div>
+        
+      </div>
+      <div class="mini panel-lite">
+        <div class="mini-title">현재</div>
+        
+      </div>
+    </div>
           </section>
 
           <!-- 섹션: 심박수 변화 (미니차트 3분할 예시) -->
@@ -119,4 +134,15 @@
       </div>
     </div>
   </body>
+
+  <script>
+  document.querySelectorAll('.tabs .tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabs .tab').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      // TODO: 실제 탭 콘텐츠 전환은 React에서 상태로 처리 예정
+    });
+  });
+</script>
+
 </html>

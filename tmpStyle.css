@@ -26,7 +26,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    'Noto Sans KR', sans-serif;
+    "Noto Sans KR", sans-serif;
 }
 
 /* 바깥 여백과 가운데 1컬럼(피그마 16px 패딩 기준) */
@@ -38,77 +38,104 @@ body {
   margin: 0 auto;
 }
 
-/* 탭 */
+/* 기존 .tabs 수정 */
 .tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid var(--ring);
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  overflow: hidden;
-  background: #fff;
-}
-.tab {
-  appearance: none;
-  border: none;
-  background: #fff;
-  padding: 14px 0;
-  font-weight: 800;
-  color: var(--muted);
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-}
-.tab.is-active {
-  color: var(--text);
-  border-bottom-color: var(--brand);
+  display: flex;
+  gap: 0;
+  background: transparent;
+  border: 0; /* 탭 바 자체 테두리/라운드 제거 */
+  padding: 0; /* ⬅⬅⬅ 여기! 아래 패딩 때문에 틈이 생겼었음 */
+  margin: 0 0 -1px; /* 페이지 테두리 위로 1px 끌어올림(겹치기) */
 }
 
-/* 본문 컨테이너(끊김 없이 쭉) */
+/* 탭 버튼 */
+.tab {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none; /* 아래쪽은 비워두고 */
+  color: #6b7280;
+  font-weight: 900;
+  padding: 14px 16px;
+  border-radius: 10px 10px 0 0; /* 상단만 둥글게 */
+  cursor: pointer;
+}
+
+/* 활성 탭만 흰색 카드처럼 보이게 + 페이지와 연결 */
+.tab.is-active {
+  background: #fff;
+  color: #111827;
+  border-color: var(--ring);
+  border-bottom-color: #fff; /* 아래 경계는 흰색으로(사실상 끊김 없이) */
+  position: relative;
+  z-index: 2;
+}
+
+/* 페이지 카드: 위쪽 경계는 탭이 덮으므로 없앰 */
 .page {
   background: #fff;
   border: 1px solid var(--ring);
-  border-top: none;
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  border-top: none; /* 탭 아래쪽과 맞물리게 */
+  border-radius: 0 10px 10px 10px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: var(--gap);
 }
 
-/* 섹션 카드 */
+/* ====== 제목들: 진한 검정, 음영 제거 ====== */
+.panel-title {
+  margin: 0 0 12px;
+  font-size: 22px;
+  font-weight: 900;
+  color: #111827; /* 검정 */
+  text-shadow: none;
+}
+.sub-title {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #111827; /* 검정 */
+  text-shadow: none;
+}
+
+/* ====== 패널: 그림자 제거(명암 X) ====== */
 .panel {
   background: #fff;
   border: 1px solid var(--ring);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-1);
+  /* box-shadow: var(--shadow-1);  제거 */
+  box-shadow: none;
   padding: 16px;
 }
+
+/* 심박수 안쪽 작은 카드도 동일하게 flat */
 .panel-lite {
   background: #fff;
   border: 1px solid var(--ring);
   border-radius: 12px;
   padding: 12px;
+  box-shadow: none;
 }
-.panel-title {
-  margin: 0 0 8px;
-  font-size: 18px;
-  font-weight: 800;
+
+/* 심박수 변화 인셋 카드(있다면) */
+.panel-inset {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--ring);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: none; /* inset/음영 제거 */
 }
-.sub-title {
-  margin: 0 0 10px;
-  font-size: 14px;
-  font-weight: 800;
-  color: #111827;
+
+/* 차트 높이(옵션) */
+.chart.placeholder {
+  height: 220px;
 }
-.panel-body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+
+/* 캡션 색은 살짝 흐리게 유지 */
 .caption {
-  margin: 0;
-  font-size: 12px;
   color: var(--muted);
-  line-height: 1.5;
 }
 
 /* placeholder 영역(추후 그래프/도넛 교체) */
