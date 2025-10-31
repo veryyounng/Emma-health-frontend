@@ -11,7 +11,7 @@ type RppgBlock = {
   hrValues: number[];
   hrv: string;
   emotion: string;
-  stress: string; // "21" 같은 문자열일 수 있음
+  stress: string; 
   emotionResult: Record<string, number>; // {우울:9, 행복:45, ...}
 };
 type Report = {
@@ -50,10 +50,6 @@ export default function App() {
     () => (data ? toNum(data.currentRPPG.hrv) : 0),
     [data]
   );
-  // const hrvPrev = useMemo(
-  //   () => (data ? toNum(data.previousRPPG.hrv) : 0),
-  //   [data]
-  // );
 
   if (isLoading || isFetching) {
     return (
