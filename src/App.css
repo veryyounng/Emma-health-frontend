@@ -26,7 +26,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    'Noto Sans KR', sans-serif;
+    "Noto Sans KR", sans-serif;
 }
 
 .wrap {
@@ -57,7 +57,7 @@ body {
   padding: 14px 16px;
   border-radius: 10px 10px 0 0;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .tab.is-active {
@@ -127,7 +127,7 @@ body {
 
 .panel-lite {
   background: #fff;
-  border: 1px solid var(--ring);
+  /* border: 1px solid var(--ring); */
   border-radius: 12px;
   padding: 12px;
   box-shadow: none;
@@ -209,7 +209,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 12px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 700;
   font-size: 60px;
   line-height: 1;
