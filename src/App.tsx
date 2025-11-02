@@ -11,6 +11,37 @@ import HeartPng from './img/hrv 2.png';
 import StressGauge from './components/StressGauge';
 import PointerPng from './img/Polygon 5.png';
 import EmotionDonut from './components/EmotionDonut';
+import DepressionDonut from './components/DepressionDonut';
+import DetailedResultSkeleton from './components/DetailedResultSkeleton';
+import DetailedResult from './components/DetailedResult';
+
+type EmpathyRow = {
+  aiAnalysis: { emotion: string; percentage: number };
+  myEmotion: string;
+};
+type BeforeAfter = { before: number; after: number };
+
+type Detailed = {
+  empathy: {
+    emotionRows: EmpathyRow[];
+    empathyScores: BeforeAfter[];
+  };
+  mimic?: {
+    matchScores: Array<{ emotion: string; before: number; after: number }>;
+  };
+  recognition?: {
+    recognitionRows: Array<{ proposedEmotion: string; myEmotion: string }>;
+    accuracyBefore: number;
+    accuracyAfter: number;
+    responseTime: number;
+  };
+  replication?: {
+    replicationRows: Array<{
+      proposedEmotion: string;
+      aiAnalysis: { emotion: string; previous: number; current: number };
+    }>;
+  };
+};
 
 /** 응답 타입 */
 type RppgBlock = {
@@ -25,6 +56,7 @@ type Report = {
   previousRPPG: RppgBlock;
   currentRPPG: RppgBlock;
   depressionScore: { previous: number; current: number };
+  detailed?: Detailed; // ✅ 여기!
 };
 
 type HrStats = { min: number; avg: number; max: number };
@@ -122,7 +154,6 @@ export default function App() {
   return (
     <div className="wrap">
       <div className="container">
-        {/* 상단 탭 */}
         <nav className="tabs">
           <button
             className={`tab ${activeTab === 'basic' ? 'is-active' : ''}`}
@@ -139,158 +170,170 @@ export default function App() {
         </nav>
 
         <main className="page">
-          {/* 섹션: 심박수(차트 + 캡션) */}
-          <section className="panel">
-            <h2 className="sub-title">심박수</h2>
-            <div className="panel-body">
-              <div className="chart">
-                <RPPGChart
-                  previous={data.previousRPPG.hrValues}
-                  current={data.currentRPPG.hrValues}
-                />
-              </div>
-            </div>
-
-            <div className="panel-inset">
-              <h3 className="sub-title">심박수 변화</h3>
-              심박수는 어쩌구어쩌구어쩌구
-              <div
-                className="mini-grid"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'minmax(160px, 1fr) 1fr 1fr',
-                  gap: 16,
-                  alignItems: 'start',
-                }}
-              >
-                <div
-                  className="mini panel-lite2"
-                  style={{
-                    display: 'grid',
-                    placeItems: 'center',
-                    minHeight: 240,
-                  }}
-                >
-                  <HrLegendBox />
+          {activeTab === 'basic' ? (
+            <>
+              {/* 섹션: 심박수(차트 + 캡션) */}
+              <section className="panel">
+                <h2 className="sub-title">심박수</h2>
+                <div className="panel-body">
+                  <div className="chart">
+                    <RPPGChart
+                      previous={data.previousRPPG.hrValues}
+                      current={data.currentRPPG.hrValues}
+                    />
+                  </div>
                 </div>
 
-                <div className="mini panel-lite">
-                  <HrRangeChart
-                    stats={prevStats}
-                    color="#4285F4"
-                    title="직전"
-                    domain={yDomain}
-                    height={240}
+                <div className="panel-inset">
+                  <h3 className="sub-title">심박수 변화</h3>
+                  심박수는 어쩌구어쩌구어쩌구
+                  <div
+                    className="mini-grid"
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'minmax(160px, 1fr) 1fr 1fr',
+                      gap: 16,
+                      alignItems: 'start',
+                    }}
+                  >
+                    <div
+                      className="mini panel-lite2"
+                      style={{
+                        display: 'grid',
+                        placeItems: 'center',
+                        minHeight: 240,
+                      }}
+                    >
+                      <HrLegendBox />
+                    </div>
+
+                    <div className="mini panel-lite">
+                      <HrRangeChart
+                        stats={prevStats}
+                        color="#4285F4"
+                        title="직전"
+                        domain={yDomain}
+                        height={240}
+                      />
+                    </div>
+                    <div className="mini panel-lite">
+                      <HrRangeChart
+                        stats={currStats}
+                        color="#EA4335"
+                        title="현재"
+                        domain={yDomain}
+                        height={240}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* 섹션: 심박 변이도 */}
+
+              <section className="panel">
+                <h3 className="sub-title">심박 변이도</h3>
+                <div className="hrv">
+                  {/* 🔹 왼쪽: 전 */}
+                  <div className="gauge">
+                    <HrvSingleGauge
+                      value={toNum(data.previousRPPG.hrv)}
+                      min={0}
+                      max={200}
+                      label="전"
+                    />
+                  </div>
+
+                  {/* 🔹 중앙: 하트 + 수치 + 설명 */}
+                  <div className="hrv-center">
+                    <div className="big-kv">
+                      <span className="heart">
+                        <img src={HeartPng} alt="heart" />
+                      </span>
+                      {hrvNow} <small>ms</small>
+                    </div>
+
+                    <p className="hrv-desc">
+                      심박 변이도는 심장이 얼마나 유연하게 <br />
+                      조절되는 지를 알려주는 지표에요. <br />
+                      해당 값이 높을수록 건강한 상태를 의미해요.
+                    </p>
+                    <p className="hrv-desc2">
+                      제공된 HRV 위험도는 참고용으로서, 정확한 진단은 반드시
+                      의료기관에서 받으시기 바랍니다.
+                    </p>
+                  </div>
+
+                  {/* 🔹 오른쪽: 후 */}
+                  <div className="gauge">
+                    <HrvSingleGauge
+                      value={toNum(data.currentRPPG.hrv)}
+                      min={0}
+                      max={200}
+                      label="후"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* 섹션: 스트레스 & 감정 */}
+              <section className="grid-2">
+                {/* 스트레스 */}
+                <div className="panel">
+                  <h3 className="sub-title">스트레스</h3>
+                  <StressGauge
+                    score={stressScore}
+                    level={data.currentRPPG.stress}
+                    min={0}
+                    max={100}
+                    pointerSrc={PointerPng}
                   />
                 </div>
-                <div className="mini panel-lite">
-                  <HrRangeChart
-                    stats={currStats}
-                    color="#EA4335"
-                    title="현재"
-                    domain={yDomain}
-                    height={240}
+
+                {/* 감정 */}
+                <div className="panel">
+                  <h3 className="sub-title">감정</h3>
+                  <EmotionDonut dist={data.currentRPPG.emotionResult} />
+                </div>
+              </section>
+
+              {/* 섹션: 우울증 설문 결과 */}
+              <section className="panel">
+                <h3 className="sub-title">우울증 설문 결과</h3>
+                <div className="grid-2">
+                  {/* 🔹 도넛 그래프 추가 */}
+                  <DepressionDonut
+                    score={data.depressionScore.current}
+                    max={27}
                   />
+
+                  {/* 🔹 결과 설명 */}
+                  <div className="panel-body">
+                    <div className="result-row">
+                      <span className="result-label">결과</span>
+                      <span className="badge">주의</span>
+                    </div>
+                    <p className="caption2">
+                      가벼운 수준의 우울감이 나타나고 있습니다. <br />
+                      일시적인 감정 기복일 수 있으나, 증상이 악화되지 않도록
+                      적극적인 관심과 관리가 필요합니다.
+                      <br />
+                      <br />
+                      가족, 친구, 이웃 등 주변 사람과의 교류를 늘리고,
+                      필요하다면 지역사회 상담기관이나 심리상담센터 등 전문
+                      자원을 활용해 보세요.
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </section>
+              </section>
 
-          {/* 섹션: 심박 변이도 */}
-
-          <section className="panel">
-            <h3 className="sub-title">심박 변이도</h3>
-            <div className="hrv">
-              {/* 🔹 왼쪽: 전 */}
-              <div className="gauge">
-                <HrvSingleGauge
-                  value={toNum(data.previousRPPG.hrv)}
-                  min={0}
-                  max={200}
-                  label="전"
-                />
-              </div>
-
-              {/* 🔹 중앙: 하트 + 수치 + 설명 */}
-              <div className="hrv-center">
-                <div className="big-kv">
-                  <span className="heart">
-                    <img src={HeartPng} alt="heart" />
-                  </span>
-                  {hrvNow} <small>ms</small>
-                </div>
-
-                <p className="hrv-desc">
-                  심박 변이도는 심장이 얼마나 유연하게 <br />
-                  조절되는 지를 알려주는 지표에요. <br />
-                  해당 값이 높을수록 건강한 상태를 의미해요.
-                </p>
-                <p className="hrv-desc2">
-                  제공된 HRV 위험도는 참고용으로서, 정확한 진단은 반드시
-                  의료기관에서 받으시기 바랍니다.
-                </p>
-              </div>
-
-              {/* 🔹 오른쪽: 후 */}
-              <div className="gauge">
-                <HrvSingleGauge
-                  value={toNum(data.currentRPPG.hrv)}
-                  min={0}
-                  max={200}
-                  label="후"
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* 섹션: 스트레스 & 감정 */}
-          <section className="grid-2">
-            {/* 스트레스 */}
-            <div className="panel">
-              <h3 className="sub-title">스트레스</h3>
-              <StressGauge
-                score={stressScore}
-                level={data.currentRPPG.stress}
-                min={0}
-                max={100}
-                pointerSrc={PointerPng}
-              />
-            </div>
-
-            {/* 감정 */}
-            <div className="panel">
-              <h3 className="sub-title">감정</h3>
-              <EmotionDonut dist={data.currentRPPG.emotionResult} />
-            </div>
-          </section>
-
-          {/* 섹션: 우울증 설문 결과 */}
-          <section className="panel">
-            <h3 className="sub-title">우울증 설문 결과</h3>
-            <div className="grid-2">
-              <div className="gauge placeholder">
-                도넛({data.depressionScore.current}/27)
-              </div>
-              <div className="panel-body">
-                <div className="result-row">
-                  <span className="result-label">결과</span>
-                  <span className="badge">주의</span>
-                </div>
-                <p className="caption2">
-                  가벼운 수준의 우울감이 나타나고 있습니다. <br />
-                  일시적인 감정 기복일 수 있으나, 증상이 악화되지 않도록
-                  적극적인 관심과 관리가 필요합니다.
-                  <br />
-                  <br />
-                  가족, 친구, 이웃 등 주변 사람과의 교류를 늘리고, 필요하다면
-                  지역사회 상담기관이나 심리상담센터 등 전문 자원을 활용해
-                  보세요.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <button className="primary block">종료</button>
+              <button className="primary block">종료</button>
+            </>
+          ) : data.detailed ? (
+            <DetailedResult detailed={data.detailed} />
+          ) : (
+            <DetailedResultSkeleton />
+          )}
         </main>
       </div>
     </div>

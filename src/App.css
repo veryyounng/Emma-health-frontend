@@ -97,6 +97,14 @@ body {
   font-family: Inter;
 }
 
+/* 표정 공감하기 섹션 제목 중앙 정렬 - empathy table이 포함된 섹션만 */
+section.panel:has(.empathy-table) .sub-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
 .panel {
   background: #fff;
   border: 1px solid var(--ring);
@@ -328,4 +336,102 @@ body {
 }
 .block {
   margin-top: 6px;
+}
+
+/* ===== 표정 공감하기 – 제목 형광펜 ===== */
+.sub-title.marker {
+  display: inline-block;
+  padding: 0 6px 2px;
+  background: linear-gradient(transparent 65%, rgba(221, 233, 255, 1), 0);
+  border-radius: 4px;
+  margin: 0 auto 14px;
+}
+
+/* ===== 표정 공감하기 테이블 ===== */
+/* ===== 섹션 외곽 보더 제거용 ===== */
+.panel.no-border {
+  border: none;
+}
+
+/* ===== 섹션 제목 형광펜(연파랑) ===== */
+.sub-title.hl {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+  text-align: center;
+  justify-items: center;
+}
+.sub-title.hl::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: -6px; /* 살짝 더 길게 */
+  bottom: 2px;
+  height: 14px;
+  background: rgba(221, 233, 255, 1); /* 요구 색상 */
+  z-index: -1;
+  border-radius: 6px;
+}
+
+/* ====== 표정 공감하기 테이블 ====== */
+.empathy-wrap {
+  margin-top: 6px;
+}
+
+/* 바깥 테이블 보더는 제거, 셀 간선만 사용 */
+.empathy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: center;
+  background: #fff;
+  border: 0; /* 바깥 한 번 감싼 보더 제거 */
+}
+.empathy-table th,
+.empathy-table td {
+  padding: 12px 10px;
+  border: 1px solid #cbdafe; /* 셀 보더(연파랑) */
+  color: #0f172a;
+}
+
+/* 헤더 스타일 */
+.empathy-table thead th {
+  font-weight: 800;
+  color: #0f172a;
+  background: #eaf1ff; /* 더 옅은 파랑 헤더 */
+}
+
+/* 3등분 시각화: 좌/우 컬럼 연파랑 배경 */
+.empathy-table .col-left,
+.empathy-table .col-right {
+  background: rgba(221, 233, 255, 1);
+}
+
+/* 3등분 경계선(굵게) – 좌 그룹 뒤, 우 그룹 앞 */
+.empathy-table th:nth-child(1),
+.empathy-table td:nth-child(1) {
+  border-right-width: 2px;
+}
+.empathy-table th:nth-child(4),
+.empathy-table td:nth-child(4) {
+  border-right-width: 2px;
+}
+
+/* 일치/불일치 색상 */
+.empathy-table td.ok {
+  color: var(--brand);
+  font-weight: 800;
+} /* 파랑 */
+.empathy-table td.no {
+  color: var(--danger);
+  font-weight: 800;
+} /* 빨강 */
+
+/* 하단 캡션(시안 텍스트) */
+.empathy-caption {
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #6b7280;
+  text-align: center;
 }
