@@ -96,10 +96,12 @@ export default function RecognitionSection({
           <div className="recog-acc-box">
             <p className="recog-acc-desc">
               7가지 감정 중<br />
-              맞춘 개수로 산정합니다.
+              2개를 맞추셨습니다.
             </p>
             <div className="recog-acc-row">
               <span>정확도</span>
+              <br></br>
+
               <b>{accuracyBefore}%</b>
               <span className="arrow">→</span>
               <b className={accuracyAfter >= accuracyBefore ? "up" : "down"}>
@@ -112,20 +114,80 @@ export default function RecognitionSection({
         {/* 반응 속도 게이지 */}
         <div className="recog-card gauge">
           <div className="recog-head">반응 속도</div>
-          <div className="semi-gauge">
-            {/* 배경 아크들 */}
-            <div className="g-arc g-good" />
-            <div className="g-arc g-mid" />
-            <div className="g-arc g-bad" />
-            {/* 바늘 */}
-            <div
-              className="needle"
-              style={{ transform: `rotate(${deg}deg)` }}
-            />
-            <div className="g-center">
-              <div className="g-ms">{responseTime}ms</div>
-              <div className="g-label">{label}</div>
-            </div>
+
+          <div className="rs-gauge">
+            <svg viewBox="0 0 200 140" className="rs-gauge-svg">
+              {/* 바깥 기본 아크(노랑) */}
+              <path
+                d="M20 100 A80 80 0 0 1 180 100"
+                stroke="#f2c200"
+                strokeWidth="16"
+                fill="none"
+                strokeLinecap="round"
+              />
+
+              {/* 좌측 녹색 짧은 구간 */}
+              <path
+                d="M20 100 A80 80 0 0 1 180 100"
+                stroke="#22c55e"
+                strokeWidth="16"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray="70 400"
+              />
+
+              {/* 우측 붉은 짧은 구간 */}
+              <path
+                d="M20 100 A80 80 0 0 1 180 100"
+                stroke="#ef4444"
+                strokeWidth="16"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray="55 400"
+                strokeDashoffset="-75"
+              />
+
+              {/* 내부 붉은 아크들(원본처럼 3단) */}
+              <path
+                d="M40 100 A60 60 0 0 1 160 100"
+                stroke="#ef4444"
+                strokeWidth="10"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray="85 400"
+                strokeDashoffset="-35"
+              />
+              <path
+                d="M60 100 A40 40 0 0 1 140 100"
+                stroke="#ef4444"
+                strokeWidth="8"
+                fill="none"
+                strokeLinecap="round"
+                strokeDasharray="60 400"
+                strokeDashoffset="-20"
+              />
+              <path
+                d="M80 100 A20 20 0 0 1 120 100"
+                stroke="#ef4444"
+                strokeWidth="6"
+                fill="none"
+                strokeLinecap="round"
+              />
+
+              {/* 바늘 */}
+              <line
+                x1="100"
+                y1="100"
+                x2="100"
+                y2="28"
+                stroke="black"
+                strokeWidth="3"
+                transform={`rotate(${deg - 90}, 100, 100)`}
+              />
+            </svg>
+
+            <div className="rs-value">{responseTime}ms</div>
+            <div className="rs-label">{label}</div>
           </div>
         </div>
       </div>
