@@ -8,8 +8,8 @@ type DepressionDonutProps = {
 export default function DepressionDonut({ score, max }: DepressionDonutProps) {
   // const pct = Math.min(score / max, 1);
   const data = [
-    { name: 'score', value: score, color: '#FACC15' }, // 노란색
-    { name: 'rest', value: max - score, color: '#E5E7EB' }, // 회색
+    { name: 'score', value: score, color: 'rgba(255, 204, 0, 1)' }, // 노란색
+    { name: 'rest', value: max - score, color: 'rgba(217, 217, 217, 1)' }, // 회색
   ];
 
   return (

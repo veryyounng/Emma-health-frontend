@@ -8,8 +8,8 @@ const EMO_META: Record<
   string,
   { label: string; color: string; emoji: string }
 > = {
-  Neutral: { label: '중립', color: '#D9D9D9', emoji: '😐' },
-  Happy: { label: '행복', color: '#22C55E', emoji: '😊' },
+  Neutral: { label: '중립', color: 'rgba(217, 217, 217, 1)', emoji: '😐' },
+  Happy: { label: '행복', color: 'rgba(105, 211, 70, 1)', emoji: '😊' },
   Surprised: { label: '놀람', color: '#FACC15', emoji: '😮' },
   Sad: { label: '슬픔', color: '#60A5FA', emoji: '😟' },
   Angry: { label: '분노', color: '#EF4444', emoji: '😠' },
