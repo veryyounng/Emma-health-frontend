@@ -1,6 +1,6 @@
 // src/components/DetailedResult.tsx
-import React from 'react';
 import EmpathyTable from './EmpathyTable';
+import MimicTable from './MimicTable';
 
 export type BeforeAfter = { before: number; after: number };
 export type EmpathyRow = {
@@ -13,7 +13,21 @@ export type Detailed = {
     emotionRows: EmpathyRow[];
     empathyScores: BeforeAfter[];
   };
-  // ... (다음 섹션은 추후 확장)
+  mimic?: {
+    matchScores: Array<{ emotion: string; before: number; after: number }>;
+  };
+  recognition?: {
+    recognitionRows: Array<{ proposedEmotion: string; myEmotion: string }>;
+    accuracyBefore: number;
+    accuracyAfter: number;
+    responseTime: number;
+  };
+  replication?: {
+    replicationRows: Array<{
+      proposedEmotion: string;
+      aiAnalysis: { emotion: string; previous: number; current: number };
+    }>;
+  };
 };
 
 type Props = {
@@ -37,6 +51,16 @@ export default function DetailedResult({
       </section>
 
       {/* (다음 섹션: 표정 따라하기 / 인지하기 / 지어보기 – 이후 단계에서 추가) */}
+      {/* ✅ 표정 따라하기 */}
+      <section className="panel no-border">
+        <h2 className="sub-title hl">표정 따라하기</h2>
+        <MimicTable matchScores={detailed.mimic?.matchScores} />
+        <p className="empathy-caption" style={{ marginTop: 12 }}>
+          국회의원은 그 지위를 남용하여 국가·공공단체 또는 기업체와의 계약이나
+          그 처분에 의하여 재산상의 권리·이익 또는 직위를 취득하거나 타인을
+          위하여 그 취득을 알선할 수 없다.
+        </p>
+      </section>
 
       <button className="primary block" style={{ marginTop: 24 }}>
         종료

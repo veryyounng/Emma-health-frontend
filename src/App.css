@@ -435,3 +435,87 @@ section.panel:has(.empathy-table) .sub-title {
   color: #6b7280;
   text-align: center;
 }
+
+/* ===== 표정 따라하기 ===== */
+.mimic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 14px;
+}
+
+.mimic-card {
+  border: 1px solid #dbeafe; /* 연한 파랑 */
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+}
+
+.mimic-card.left {
+  background: rgba(221, 233, 255, 1); /* 요구색 */
+}
+.mimic-card.right {
+  background: #fff;
+}
+
+.mimic-card-head {
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.mimic-emolist {
+  list-style: none;
+  padding: 0 8px;
+  margin: 0;
+}
+.mimic-emolist li {
+  padding: 10px 6px;
+  border-bottom: 1px solid #dbeafe;
+}
+.mimic-emolist li:last-child {
+  border-bottom: 0;
+}
+
+.mimic-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.mimic-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+  font-weight: 700;
+  color: #374151;
+}
+.mimic-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.mimic-table td.old {
+  color: #111827;
+}
+.mimic-table td.arrow {
+  width: 36px;
+  font-weight: 900;
+}
+
+.mimic-table .new.up {
+  color: var(--brand);
+} /* 상승: 파랑 */
+.mimic-table .arrow.up {
+  color: var(--brand);
+}
+.mimic-table .new.down {
+  color: var(--danger);
+} /* 하락: 빨강 */
+.mimic-table .arrow.down {
+  color: var(--danger);
+}
+.mimic-table .new.flat {
+  color: #6b7280;
+} /* 동일: 회색 */
+.mimic-table .arrow.flat {
+  color: #6b7280;
+}
