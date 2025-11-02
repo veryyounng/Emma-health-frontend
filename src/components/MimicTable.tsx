@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 
 type MatchScore = { emotion: string; before: number; after: number };
 

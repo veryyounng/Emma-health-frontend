@@ -6,7 +6,7 @@ type DepressionDonutProps = {
 };
 
 export default function DepressionDonut({ score, max }: DepressionDonutProps) {
-  const pct = Math.min(score / max, 1);
+  // const pct = Math.min(score / max, 1);
   const data = [
     { name: 'score', value: score, color: '#FACC15' }, // 노란색
     { name: 'rest', value: max - score, color: '#E5E7EB' }, // 회색

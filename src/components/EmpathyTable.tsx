@@ -1,5 +1,5 @@
 // src/components/EmpathyTable.tsx
-import React from 'react';
+// import React from 'react';
 
 type BeforeAfter = { before: number; after: number };
 type EmpathyRow = {
