@@ -1,6 +1,8 @@
 // src/components/DetailedResult.tsx
 import EmpathyTable from './EmpathyTable';
 import MimicTable from './MimicTable';
+import RecognitionSection from './RecognitionSection';
+import ReplicationSection from './ReplicationSection';
 
 export type BeforeAfter = { before: number; after: number };
 export type EmpathyRow = {
@@ -61,6 +63,20 @@ export default function DetailedResult({
           위하여 그 취득을 알선할 수 없다.
         </p>
       </section>
+
+      {/* ✅ 표정 인지하기 */}
+      {detailed.recognition && (
+        <RecognitionSection
+          rows={detailed.recognition.recognitionRows}
+          accuracyBefore={detailed.recognition.accuracyBefore}
+          accuracyAfter={detailed.recognition.accuracyAfter}
+          responseTime={detailed.recognition.responseTime}
+        />
+      )}
+
+      {detailed.replication && (
+        <ReplicationSection rows={detailed.replication.replicationRows} />
+      )}
 
       <button className="primary block" style={{ marginTop: 24 }}>
         종료
