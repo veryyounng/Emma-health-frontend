@@ -54,7 +54,6 @@ export default function HrRangeChart({
     { x: 1, v: min },
   ];
 
-  const [y0, y1] = domain;
 
   return (
     <div style={{ width: "100%", height }}>

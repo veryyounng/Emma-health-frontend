@@ -8,6 +8,10 @@ import HrLegendBox from "./components/HrLegendBox";
 import { HrvSingleGauge } from "./components/HrvGauge";
 import "./App.css";
 import HeartPng from "./img/hrv 2.png";
+import StressGauge from "./components/StressGauge";
+import PointerPng from "./img/Polygon 5.png";
+
+
 
 /** 응답 타입 */
 type RppgBlock = {
@@ -63,10 +67,23 @@ export default function App() {
 
   const toNum = (s: string | number) =>
     Number(String(s).replace(/[^0-9.-]/g, "") || 0);
-  const stressScore = useMemo(
-    () => (data ? toNum(data.currentRPPG.stress) : 0),
-    [data]
-  );
+  
+
+  const STRESS_MAP: Record<string, number> = {
+    Low: 20,
+    Medium: 50,
+    High: 80,
+  };
+  
+  const stressScore = useMemo(() => {
+    if (!data) return 0;
+    const raw = data.currentRPPG.stress;
+    const num = Number(String(raw).replace(/[^0-9.-]/g, ""));
+    return Number.isFinite(num) && num > 0 ? num : STRESS_MAP[raw] ?? 0;
+  }, [data]);
+  
+  
+
   const hrvNow = useMemo(
     () => (data ? toNum(data.currentRPPG.hrv) : 0),
     [data]
@@ -104,9 +121,7 @@ export default function App() {
 
   const prevStats: HrStats = calcHrStats(data.previousRPPG.hrValues);
   const currStats: HrStats = calcHrStats(data.currentRPPG.hrValues);
-  
-  const yDomain: [number, number] = [0, 160]; // 세로축 0~160 고정
-  
+  const yDomain: [number, number] = [0, 160];
 
   return (
     <div className="wrap">
@@ -241,9 +256,10 @@ export default function App() {
               <h3 className="sub-title">스트레스</h3>
               <StressGauge
                 score={stressScore}
+                level={data.currentRPPG.stress}
                 min={0}
                 max={100}
-                pointerSrc="./src/img/Polygon 5.png"
+                pointerSrc={PointerPng}
               />
             </div>
 
@@ -294,45 +310,6 @@ export default function App() {
           <button className="primary block">종료</button>
         </main>
       </div>
-    </div>
-  );
-}
-
-/* ========================= */
-/* 재사용: 스트레스 게이지   */
-/* ========================= */
-function StressGauge({
-  score,
-  min = 0,
-  max = 100,
-  pointerSrc,
-}: {
-  score: number;
-  min?: number;
-  max?: number;
-  pointerSrc: string;
-}) {
-  const clamped = Math.max(min, Math.min(score, max));
-  const pct = ((clamped - min) / (max - min)) * 100;
-  const SAFE = 2; // 둥근 끝 잘림 방지
-  const left = Math.max(SAFE, Math.min(pct, 100 - SAFE));
-
-  return (
-    <div className="stressbar">
-      <div className="bar" data-min={min} data-max={max}>
-        <img
-          className="pointer-img"
-          src={pointerSrc}
-          alt="pointer"
-          style={{ left: `${left}%` }}
-          draggable={false}
-        />
-      </div>
-      <p className="caption">
-        스트레스 수치가 낮아요. <br />
-        가끔 스트레스를 경험하긴 하지만 <br />
-        충분히 관리할 수 있는 상태에요!
-      </p>
     </div>
   );
 }
