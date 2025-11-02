@@ -1,4 +1,3 @@
-// src/components/DetailedResult.tsx
 import EmpathyTable from './EmpathyTable';
 import MimicTable from './MimicTable';
 import RecognitionSection from './RecognitionSection';
@@ -11,10 +10,7 @@ export type EmpathyRow = {
 };
 
 export type Detailed = {
-  empathy: {
-    emotionRows: EmpathyRow[];
-    empathyScores: BeforeAfter[];
-  };
+  empathy: { emotionRows: EmpathyRow[]; empathyScores: BeforeAfter[] };
   mimic?: {
     matchScores: Array<{ emotion: string; before: number; after: number }>;
   };
@@ -34,7 +30,7 @@ export type Detailed = {
 
 type Props = {
   detailed: Detailed;
-  currentEmotionKo?: string; // 현재 대표 감정(한글) – App에서 내려줌
+  currentEmotionKo?: string;
 };
 
 export default function DetailedResult({
@@ -52,35 +48,34 @@ export default function DetailedResult({
         />
       </section>
 
-      {/* (다음 섹션: 표정 따라하기 / 인지하기 / 지어보기 – 이후 단계에서 추가) */}
-      {/* ✅ 표정 따라하기 */}
       <section className="panel no-border">
         <h2 className="sub-title hl">표정 따라하기</h2>
         <MimicTable matchScores={detailed.mimic?.matchScores} />
-        <p className="empathy-caption" style={{ marginTop: 12 }}>
+        <p className="empathy-caption">
           국회의원은 그 지위를 남용하여 국가·공공단체 또는 기업체와의 계약이나
           그 처분에 의하여 재산상의 권리·이익 또는 직위를 취득하거나 타인을
           위하여 그 취득을 알선할 수 없다.
         </p>
       </section>
 
-      {/* ✅ 표정 인지하기 */}
       {detailed.recognition && (
-        <RecognitionSection
-          rows={detailed.recognition.recognitionRows}
-          accuracyBefore={detailed.recognition.accuracyBefore}
-          accuracyAfter={detailed.recognition.accuracyAfter}
-          responseTime={detailed.recognition.responseTime}
-        />
+        <section className="panel no-border">
+          <RecognitionSection
+            rows={detailed.recognition.recognitionRows}
+            accuracyBefore={detailed.recognition.accuracyBefore}
+            accuracyAfter={detailed.recognition.accuracyAfter}
+            responseTime={detailed.recognition.responseTime}
+          />
+        </section>
       )}
 
       {detailed.replication && (
-        <ReplicationSection rows={detailed.replication.replicationRows} />
+        <section className="panel no-border">
+          <ReplicationSection rows={detailed.replication.replicationRows} />
+        </section>
       )}
 
-      <button className="primary block" style={{ marginTop: 24 }}>
-        종료
-      </button>
+      <button className="end-button">종료</button>
     </main>
   );
 }

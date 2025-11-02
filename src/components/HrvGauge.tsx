@@ -1,5 +1,3 @@
-import { PieChart, Pie, Cell } from 'recharts';
-
 type SingleGaugeProps = {
   value: number; // HRV 값 (예: 74)
   min?: number; // 기본 0
@@ -19,31 +17,6 @@ const W = 180;
 const H = 180; // 정원형
 const cx = W / 2;
 const cy = H / 2;
-const innerR = 54;
-const outerR = 74;
-
-/** 색상 (스샷 톤) */
-const RING_BG = '#F6EEE6'; // 전체 베이지
-const ARC_TOP = '#22C55E'; // 초록 아크
-const NEEDLE = '#EF4444';
-
-/** 초록 아크가 놓일 각도 범위(시계방향 도 기준) — '윗부분만' */
-const ARC_START = 210; // 210°(좌상단 근처)
-const ARC_END = -30; // -30°(우상단 근처) => 윗부분을 가로지르는 아크
-
-/** 값 → 아크 각도(시계방향 도) 매핑 */
-function valueToArcAngleCW(value: number, min: number, max: number) {
-  const v = Math.max(min, Math.min(value, max));
-  const t = (v - min) / (max - min); // 0~1
-  return ARC_START + t * (ARC_END - ARC_START); // 시계방향 도
-}
-
-/** 극좌표 → 화면 좌표 (우리 각도는 '시계방향' 도. SVG는 y가 아래로 증가) */
-function xyOnCircle(cx: number, cy: number, r: number, angleCW: number) {
-  // 시계방향 도 -> 수학적 CCW 라디안으로 뒤집어서 계산
-  const rad = (-angleCW * Math.PI) / 180;
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-}
 
 /** 개별 게이지 (정원형 + 상단 초록 아크 + 삼각 바늘) */
 function SingleGauge({ value, min = 0, max = 200, label }: SingleGaugeProps) {

@@ -62,33 +62,32 @@ export default function EmpathyTable({
       <table className="empathy-table">
         <thead>
           <tr>
-            <th className="col-left">제시된 감정</th>
-            <th>AI 표정 분석</th>
-            <th>나의 감정</th>
-            <th>일치 여부</th>
-            <th className="col-right">공감도(이전→현재)</th>
+            <th className="g-left">제시된 감정</th>
+            <th className="g-mid">AI 표정 분석</th>
+            <th className="g-mid">나의 감정</th>
+            <th className="g-mid">일치 여부</th>
+            <th className="g-right">공감도(이전→현재)</th>
           </tr>
         </thead>
+
         <tbody>
           {ALL_LABELS.map((label) => {
             const aiPct = aiPercentByKo[label] ?? DEFAULT_PERCENT;
-            // 요구: “데이터 분석해서 일치하는 것만 ‘일치’”
-            // 현재 대표 감정과 동일한 행만 “일치”, 나머지는 “불일치”
-            const myEmotion = currentKoreanEmotion; // 한 줄 고정 표시
+            const myEmotion = currentKoreanEmotion;
             const isMatch = label === currentKoreanEmotion;
             const { before, after } = scoreFor(label);
 
             return (
               <tr key={label}>
-                <td className="col-left">
+                <td className="g-left">
                   <span className="emo">{label}</span>
                 </td>
-                <td>{`${label}(${aiPct}%)`}</td>
-                <td>{myEmotion}</td>
-                <td className={isMatch ? 'ok' : 'no'}>
+                <td className="g-mid">{`${label}(${aiPct}%)`}</td>
+                <td className="g-mid">{myEmotion}</td>
+                <td className={`g-mid ${isMatch ? 'ok' : 'no'}`}>
                   {isMatch ? '일치' : '불일치'}
                 </td>
-                <td className="col-right">
+                <td className="g-right">
                   <b>{before}점</b>&nbsp;→&nbsp;<b>{after}점</b>
                 </td>
               </tr>
