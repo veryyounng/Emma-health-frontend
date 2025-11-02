@@ -234,7 +234,7 @@ body {
   margin-top: 18px;
   font-weight: 600;
   font-size: 14px;
-  color: --text;
+  color: var(--text);
   text-align: center;
 }
 
@@ -329,3 +329,5 @@ body {
 .block {
   margin-top: 6px;
 }
+
+
