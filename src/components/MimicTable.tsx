@@ -7,22 +7,22 @@ type Props = {
 };
 
 const EN2KO: Record<string, string> = {
-  Sad: '슬픔',
-  Happy: '행복',
-  Fearful: '불안',
-  Neutral: '중립',
-  Angry: '분노',
-  Disgusted: '역겨움',
-  Surprised: '당황',
+  Sad: "슬픔 😥",
+  Happy: "행복 😄",
+  Fearful: "불안 😰",
+  Neutral: "중립 😐",
+  Angry: "분노 😡",
+  Disgusted: "역겨움 😫",
+  Surprised: "당황 😦",
 };
 const ALL_LABELS = [
-  '슬픔',
-  '행복',
-  '불안',
-  '중립',
-  '분노',
-  '역겨움',
-  '당황',
+  "슬픔 😥",
+  "행복 😄",
+  "불안 😰",
+  "중립 😐",
+  "분노 😡",
+  "역겨움 😫",
+  "당황 😦",
 ] as const;
 
 export default function MimicTable({ matchScores = [] }: Props) {
@@ -36,7 +36,7 @@ export default function MimicTable({ matchScores = [] }: Props) {
   const fallback = { before: 50, after: 50 };
 
   const trendClass = (b: number, a: number) =>
-    a > b ? 'up' : a < b ? 'down' : 'flat';
+    a > b ? "up" : a < b ? "down" : "flat";
 
   return (
     <div className="mimic-grid">

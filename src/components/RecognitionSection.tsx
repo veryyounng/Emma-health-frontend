@@ -11,32 +11,32 @@ export type RecognitionProps = {
 
 /** 영→한 매핑 */
 const EN2KO: Record<string, string> = {
-  Sad: '슬픔',
-  Happy: '행복',
-  Fearful: '불안',
-  Neutral: '중립',
-  Angry: '분노',
-  Disgusted: '역겨움',
-  Surprised: '당황',
+  Sad: "슬픔 😥",
+  Happy: "행복 😄",
+  Fearful: "불안 😰",
+  Neutral: "중립 😐",
+  Angry: "분노 😡",
+  Disgusted: "역겨움 😫",
+  Surprised: "당황 😦",
 };
 
 const ALL_LABELS = [
-  '슬픔',
-  '행복',
-  '불안',
-  '중립',
-  '분노',
-  '역겨움',
-  '당황',
+  "슬픔 😥",
+  "행복 😄",
+  "불안 😰",
+  "중립 😐",
+  "분노 😡",
+  "역겨움 😫",
+  "당황 😦",
 ] as const;
 
 /** 반응 속도 등급 */
 function speedLabel(ms: number) {
-  if (ms < 200) return '매우 빠름';
-  if (ms < 300) return '약간 빠름';
-  if (ms < 500) return '보통';
-  if (ms < 700) return '약간 느림';
-  return '느림';
+  if (ms < 200) return "매우 빠름";
+  if (ms < 300) return "약간 빠름";
+  if (ms < 500) return "보통";
+  if (ms < 700) return "약간 느림";
+  return "느림";
 }
 
 /** 100~1000ms -> 0~180deg 매핑 */
@@ -85,7 +85,7 @@ export default function RecognitionSection({
           <div className="recog-head">내가 선택한 감정</div>
           <ul className="recog-list">
             {ALL_LABELS.map((l) => (
-              <li key={l}>{byLabel[l] ?? '-'}</li>
+              <li key={l}>{byLabel[l] ?? "-"}</li>
             ))}
           </ul>
         </div>
@@ -102,7 +102,7 @@ export default function RecognitionSection({
               <span>정확도</span>
               <b>{accuracyBefore}%</b>
               <span className="arrow">→</span>
-              <b className={accuracyAfter >= accuracyBefore ? 'up' : 'down'}>
+              <b className={accuracyAfter >= accuracyBefore ? "up" : "down"}>
                 {accuracyAfter}%
               </b>
             </div>

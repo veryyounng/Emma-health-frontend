@@ -7,23 +7,23 @@ type Row = {
 
 export default function ReplicationSection({ rows }: { rows: Row[] }) {
   const EN2KO: Record<string, string> = {
-    Sad: '슬픔',
-    Happy: '행복',
-    Fearful: '불안',
-    Neutral: '중립',
-    Angry: '분노',
-    Disgusted: '역겨움',
-    Surprised: '당황',
+    Sad: "슬픔 😥",
+    Happy: "행복 😄",
+    Fearful: "불안 😰",
+    Neutral: "중립 😐",
+    Angry: "분노 😡",
+    Disgusted: "역겨움 😫",
+    Surprised: "당황 😦",
   };
 
   const ORDER = [
-    '슬픔',
-    '행복',
-    '불안',
-    '중립',
-    '분노',
-    '역겨움',
-    '당황',
+    "슬픔 😥",
+    "행복 😄",
+    "불안 😰",
+    "중립 😐",
+    "분노 😡",
+    "역겨움 😫",
+    "당황 😦",
   ] as const;
 
   // 행을 7가지 감정 순서에 맞게 정리
@@ -35,7 +35,7 @@ export default function ReplicationSection({ rows }: { rows: Row[] }) {
 
   const judge = (prev: number, curr: number) => {
     const ok = curr >= 0.6 && curr >= prev;
-    return ok ? '자연스러움' : '개선 필요';
+    return ok ? "자연스러움" : "개선 필요";
   };
 
   const fmt = (v: number) => `${Math.round(v * 100)}%`;
@@ -57,7 +57,7 @@ export default function ReplicationSection({ rows }: { rows: Row[] }) {
             const r = byLabel[label];
             const aiKo = r
               ? EN2KO[r.aiAnalysis.emotion] ?? r.aiAnalysis.emotion
-              : '-';
+              : "-";
             const prev = r?.aiAnalysis.previous ?? 0;
             const curr = r?.aiAnalysis.current ?? 0;
             const result = judge(prev, curr);
@@ -66,11 +66,11 @@ export default function ReplicationSection({ rows }: { rows: Row[] }) {
               <tr key={label}>
                 <td className="left-col">{label}</td>
                 <td>
-                  {aiKo} ({fmt(prev)} <span className="arrow">→</span>{' '}
+                  {aiKo} ({fmt(prev)} <span className="arrow">→</span>{" "}
                   <b className="blue">{fmt(curr)}</b>)
                 </td>
                 <td className="right-col">
-                  <span className={result === '자연스러움' ? 'ok' : 'ng'}>
+                  <span className={result === "자연스러움" ? "ok" : "ng"}>
                     {result}
                   </span>
                 </td>
