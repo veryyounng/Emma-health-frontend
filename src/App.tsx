@@ -327,7 +327,7 @@ export default function App() {
                 </div>
               </section>
 
-              <button className="primary block">종료</button>
+              <button className="end-button">종료</button>
             </>
           ) : data.detailed ? (
             <DetailedResult detailed={data.detailed} />

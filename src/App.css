@@ -338,6 +338,32 @@ section.panel:has(.empathy-table) .sub-title {
   margin-top: 6px;
 }
 
+/* ===== 종료 버튼 (센터 정렬, 검정색 둥근 버튼) ===== */
+.end-button {
+  display: block;
+  margin: 40px auto 0; /* 가운데 정렬 + 위쪽 여백 */
+  padding: 7px 70px;
+  border: none;
+  border-radius: 999px; /* 완전 둥근 모양 */
+  background-color: #000; /* 검정색 배경 */
+  color: #fff; /* 흰색 글씨 */
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* 호버 시 효과 */
+.end-button:hover {
+  background-color: #111;
+  transform: translateY(-1px);
+}
+
+/* 클릭 시 살짝 눌리는 효과 */
+.end-button:active {
+  transform: translateY(0);
+}
+
 /* ===== 표정 공감하기 – 제목 형광펜 ===== */
 .sub-title.marker {
   display: inline-block;
