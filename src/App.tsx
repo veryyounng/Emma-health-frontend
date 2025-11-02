@@ -5,7 +5,9 @@ import { toast } from "react-hot-toast";
 import RPPGChart from "./components/RPPGChart";
 import HrRangeChart from "./components/HrRangeChart";
 import HrLegendBox from "./components/HrLegendBox";
+import { HrvSingleGauge } from "./components/HrvGauge";
 import "./App.css";
+import HeartPng from "./img/hrv 2.png";
 
 /** 응답 타입 */
 type RppgBlock = {
@@ -102,10 +104,9 @@ export default function App() {
 
   const prevStats: HrStats = calcHrStats(data.previousRPPG.hrValues);
   const currStats: HrStats = calcHrStats(data.currentRPPG.hrValues);
-
-  const maxAll = Math.max(prevStats.max, currStats.max, 120);
-  const yTop = Math.ceil((maxAll + 10) / 20) * 20;
-  const yDomain: [number, number] = [0, 100];
+  
+  const yDomain: [number, number] = [0, 160]; // 세로축 0~160 고정
+  
 
   return (
     <div className="wrap">
@@ -141,6 +142,7 @@ export default function App() {
 
             <div className="panel-inset">
               <h3 className="sub-title">심박수 변화</h3>
+              심박수는 어쩌구어쩌구어쩌구
               <div
                 className="mini-grid"
                 style={{
@@ -184,33 +186,53 @@ export default function App() {
           </section>
 
           {/* 섹션: 심박 변이도 */}
-          <section className="panel">
-            <h3 className="sub-title">심박 변이도</h3>
-            <div className="hrv">
-              <div className="gauge placeholder">도넛(전)</div>
 
-              <div className="hrv-center">
-                <div className="big-kv">
-                  <span className="heart">
-                    <img src="./src/img/hrv 2.png" alt="" />
-                  </span>
-                  {hrvNow} <small>ms</small>
-                </div>
+<section className="panel">
+  <h3 className="sub-title">심박 변이도</h3>
+  <div className="hrv">
+    {/* 🔹 왼쪽: 전 */}
+    <div className="gauge">
+      <HrvSingleGauge
+        value={toNum(data.previousRPPG.hrv)}
+        min={0}
+        max={200}
+        label="전"
+      />
+    </div>
 
-                <p className="hrv-desc">
-                  심박 변이도는 심장이 얼마나 유연하게 <br />
-                  조절되는 지를 알려주는 지표에요. <br />
-                  해당 값이 높을수록 건강한 상태를 의미해요.
-                </p>
-                <p className="hrv-desc2">
-                  제공된 HRV 위험도는 참고용으로서, 정확한 진단은 반드시
-                  의료기관에서 받으시기 바랍니다.
-                </p>
-              </div>
+    {/* 🔹 중앙: 하트 + 수치 + 설명 */}
+    <div className="hrv-center">
+      <div className="big-kv">
+      <span className="heart">
+  <img src={HeartPng} alt="heart" />
+</span>
 
-              <div className="gauge placeholder">도넛(후)</div>
-            </div>
-          </section>
+        {hrvNow} <small>ms</small>
+      </div>
+
+      <p className="hrv-desc">
+        심박 변이도는 심장이 얼마나 유연하게 <br />
+        조절되는 지를 알려주는 지표에요. <br />
+        해당 값이 높을수록 건강한 상태를 의미해요.
+      </p>
+      <p className="hrv-desc2">
+        제공된 HRV 위험도는 참고용으로서, 정확한 진단은 반드시
+        의료기관에서 받으시기 바랍니다.
+      </p>
+    </div>
+
+    {/* 🔹 오른쪽: 후 */}
+    <div className="gauge">
+      <HrvSingleGauge
+        value={toNum(data.currentRPPG.hrv)}
+        min={0}
+        max={200}
+        label="후"
+      />
+    </div>
+  </div>
+</section>
+
 
           {/* 섹션: 스트레스 & 감정 */}
           <section className="grid-2">
