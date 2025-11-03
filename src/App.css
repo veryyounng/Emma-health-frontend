@@ -26,7 +26,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    "Noto Sans KR", sans-serif;
+    'Noto Sans KR', sans-serif;
 }
 
 .wrap {
@@ -57,7 +57,7 @@ body {
   padding: 14px 16px;
   border-radius: 10px 10px 0 0;
   cursor: pointer;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .tab.is-active {
@@ -176,6 +176,7 @@ body {
 
 /* 미니 3분할 */
 .mini-grid {
+  min-width: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
@@ -210,7 +211,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 12px;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 60px;
   line-height: 1;
@@ -256,6 +257,36 @@ body {
   .grid-2 {
     grid-template-columns: 1fr;
   }
+}
+
+/* 점(●) 숨김 */
+.panel-inset .panel-lite .recharts-scatter-symbol {
+  display: none !important;
+}
+
+/* 숫자에 흰색 외곽선 → 겹쳐도 읽힘 */
+.panel-inset .panel-lite .recharts-label-list text {
+  font-weight: 800;
+  paint-order: stroke fill;
+  stroke: #fff;
+  stroke-width: 4px; /* 바탕 스트로크 */
+  transform: translate(18px, 0); /* 오른쪽으로 살짝 밀기 */
+}
+
+/* 위/가운데/아래로 더 크게 벌리기 */
+.panel-inset .panel-lite .recharts-label-list text:nth-child(1) {
+  transform: translate(18px, -32px);
+}
+.panel-inset .panel-lite .recharts-label-list text:nth-child(2) {
+  transform: translate(18px, 0px);
+}
+.panel-inset .panel-lite .recharts-label-list text:nth-child(3) {
+  transform: translate(18px, 32px);
+}
+
+/* 캡션(직전/현재) 살짝 위로 */
+.panel-inset .panel-lite > div > div:last-child {
+  transform: translateY(-10px);
 }
 
 /* 스트레스 바 */
@@ -363,13 +394,12 @@ body {
 }
 
 .sub-title.hl {
-  display: inline-block;
+  display: block;
+  width: fit-content;
   margin: 0 auto 16px;
-  padding: 0 8px 2px;
-  font-weight: 800;
   text-align: center;
+  font-weight: 800;
   background: linear-gradient(to top, #dbeafe 60%, transparent 60%);
-  border-radius: 6px;
 }
 
 .empathy-caption {
@@ -661,27 +691,27 @@ body {
 }
 
 /* ===== 표정 지어보기 테이블 ===== */
+.rep-table-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
 .rep-table {
   width: 100%;
   border-collapse: collapse;
+  border: 0;
   text-align: center;
-  font-size: 14px;
-  background: #fff;
-  border: 1px solid #dbeafe;
 }
-.rep-table th {
-  background: #dbeafe;
-  padding: 12px;
-  border: 1px solid #dbeafe;
-  font-weight: 800;
-  color: #111827;
-}
+
+.rep-table th,
 .rep-table td {
   padding: 12px;
-  border: 1px solid #dbeafe;
+  /* border: 1px solid #dbeafe; */
   color: #0f172a;
   background: #fff;
 }
+
 .rep-table .left-col,
 .rep-table .right-col {
   background: rgba(221, 233, 255, 1);
