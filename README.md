@@ -86,8 +86,6 @@ src/
 - 공감도 테이블:  
   - 제시 감정 / AI 분석 / 나의 감정 / 일치 여부 / 공감도(이전→현재)  
   - 일치 시 파랑, 불일치 시 빨강  
-  - 첫 행만 `#99C0FF` 선 표시  
-  - 좌·우 컬럼은 `#DDE9FF` 배경, 헤더 포함 라운드 처리  
 
 ---
 
@@ -95,7 +93,7 @@ src/
 ### 1. 500 에러 재시도와 안전한 UI 복구
 ####  문제
 외부 API가 간헐적으로 500(서버 내부 오류)을 반환하면서 사용자 화면에 빈 패널이나 깨진 컴포넌트가 노출되는 문제가 발생했습니다.  
-이때 사용자는 직접 새로고침을 해야만 화면이 복구되었고, 서비스 신뢰도와 사용자 경험이 크게 저하되었습니다.
+이때 사용자는 직접 새로고침을 해야만 화면이 복구되었고 사용자 경험이 크게 저하되었습니다.
 
 #### 원인
 서버 과부하나 일시적인 네트워크 지연 등 ‘일시적 장애’가 발생했을 때도 모든 요청을 즉시 실패로 처리하고 있었습니다.  
@@ -113,63 +111,102 @@ src/
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: (failureCount, error: unknown) => {
-        const status = (error as AxiosError)?.response?.status ?? 0;
-        return status >= 500 && status < 600 && failureCount < 2;
+      // 5xx/네트워크 오류 재시도, 4xx 즉시 실패
+      retry: (failureCount, error: any) => {
+        const s = error?.response?.status ?? error?.status;
+        if (s && s >= 400 && s < 500) return false;
+        return failureCount < 3;
       },
-      retryDelay: (attempt) => Math.min(250 * Math.pow(4, attempt), 3000),
-      useErrorBoundary: (error: any) => (error?.response?.status ?? 0) >= 500,
-      refetchOnWindowFocus: false,
-      staleTime: 5000,
+      // 지수 백오프 + 지터(±20%)
+      retryDelay: (attempt) => {
+        const base = 500 * Math.pow(2, attempt); // 500,1000,2000...
+        const jitter = base * 0.2;
+        return base + (Math.random() * 2 - 1) * jitter;
+      },
+      staleTime: 10_000,
+      gcTime: 5 * 60_000,
+      // v5: useErrorBoundary -> throwOnError 로 변경
+      throwOnError: (err: any) => {
+        const s = err?.response?.status ?? err?.status;
+        return s >= 500 || s === undefined;
+      },
     },
   },
 });
 ```
 
-#### 2️⃣ ErrorBoundary와 QueryErrorResetBoundary를 이용한 UI 보호
+#### 2️⃣ ErrorBoundary를 이용한 UI 보호
 
-react-error-boundary를 도입해 오류 발생 시 깨진 UI가 즉시 숨겨지고,
-사용자가 직접 “다시 시도” 버튼을 눌러 복구할 수 있도록 구성했습니다.
+react-error-boundary를 도입해 서버 오류나 네트워크 장애 시 깨진 UI가 즉시 숨겨지고,
+사용자가 직접 “다시 시도” 버튼을 눌러 안전하게 복구할 수 있도록 구성했습니다.
+
+ErrorBoundary는 전역에서 React Query의 throwOnError 옵션과 함께 동작하며,
+5xx 또는 네트워크 오류 시 상위 경계가 이를 흡수해 전체 페이지 리셋 및 재시도 버튼 노출이 가능합니다.
+
 ```ts
-<QueryErrorResetBoundary>
-  {({ reset }) => (
-    <ErrorBoundary
-      onReset={reset}
-      fallbackRender={({ resetErrorBoundary }) => (
-        <div className="error-panel">
-          <h3>일시적인 오류가 발생했어요</h3>
-          <p>네트워크 또는 서버 상태를 확인 중입니다.</p>
-          <button onClick={() => resetErrorBoundary()}>다시 시도</button>
-        </div>
-      )}
-    >
-      <ReportPage />
-    </ErrorBoundary>
-  )}
-</QueryErrorResetBoundary>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary
+        FallbackComponent={ErrorFallback}
+        onReset={() => {
+          // 전체 쿼리 초기화 및 재요청
+          queryClient.resetQueries();
+          queryClient.invalidateQueries();
+        }}
+      >
+        <App />
+      </ErrorBoundary>
+    </QueryClientProvider>
+  </React.StrictMode>
+);
 
 ```
 
 이 방식은 Query 내부에서 throw된 에러를 상위 경계 컴포넌트에서 흡수하여,
 화면이 완전히 깨지지 않고 안정적인 상태로 유지될 수 있도록 도와주었습니다.
 
-#### 3️⃣ Toast 알림을 통한 사용자 피드백
+#### 3️⃣ Toast 알림 & 상태별 피드백
 
-사용자에게는 react-hot-toast를 통해 즉각적인 시각 피드백을 제공했습니다.
-단, Toast는 ErrorBoundary와 역할이 중복되지 않도록 알림용으로만 한정했습니다.
+| 상태 | 시각 피드백 | 예시 화면 | 설명 |
+|------|--------------|------------|------|
+| 로딩 중 | ⏳ "로 딩 중..🫧" | ![로딩중](https://github.com/user-attachments/assets/3fd25a0d-270d-40ba-b8a8-679fb8816445) | 첫 요청 시, 별도 토스트 없이 화면 내 문구로 로딩 상태를 표현합니다. |
+| 자동 재시도 중 | 🔁 "재시도 중 (n/3)… 로 딩 중..🫧" | ![자동재시도중](https://github.com/user-attachments/assets/8d1464a0-e0a7-4aee-9fed-1525de914ced) | 네트워크 지연이나 서버 응답 실패 시 자동 재시도 횟수를 표시하며, UI를 유지한 채 재요청 진행 상황을 안내합니다. |
+| 요청 실패 (확정 시점) | ⚠️ toast.error("데이터를 불러오지 못했습니다.") | — | 모든 재시도 실패 후에만 토스트로 오류를 표시하여 중복 알림을 방지하고, 사용자는 "다시 시도" 버튼으로 즉시 복구할 수 있습니다. |
+
 ```ts
-useEffect(() => {
-  if (isError && !isFetching) {
-    const status = (error as any)?.response?.status ?? 0;
-    if (status >= 500) toast.error("서버가 잠시 불안정해요. 자동으로 재시도했어요.");
-    else toast.error("요청을 처리할 수 없어요. 입력 값 또는 권한을 확인해주세요.");
-  }
-}, [isError, isFetching, error]);
+  useEffect(() => {
+    if (isError) toast.error('데이터를 불러오지 못했습니다.');
+  }, [isError]);
 
 ```
 
-이렇게 함으로써 사용자는 오류 발생 원인을 명확히 인식할 수 있고,
-UI는 깨지지 않은 상태로 유지되며 “자동 복구 중”임을 시각적으로 알 수 있었습니다.
+```ts
+// App.tsx 일부
+if (isLoading || isFetching) {
+  return (
+    <div className="page">
+      {failureCount > 0
+        ? `재시도 중 (${Math.min(failureCount, 3)}/3)… 로 딩 중..🫧`
+        : '로 딩 중..🫧'}
+    </div>
+  );
+}
+
+if (isError || !data) {
+  return (
+    <div className="page">
+      <div>불러오기 실패: {(error as any)?.message ?? '불러오기 실패'}</div>
+      <button className="primary block" onClick={() => refetch()}>
+        다시 시도
+      </button>
+    </div>
+  );
+}
+```
+
+이렇게 함으로써 사용자는 오류 발생 원인을 명확히 인식할 수 있고
+UI는 깨지지 않은 상태로 유지됩니다.
 
 ### 결과
 
